@@ -1,7 +1,19 @@
 <%= form_for(:form, url: parse_path) do |f| %>
-  ИНН : <%= f.text_area :inn %><br />
+  УНП : <%= f.text_area :inn %><br />
   <%= f.submit %>
 <% end %>
-<%= @results %>
+<table border="1">
+  <tr>
+    <th>№</th>
+    <th>УНП</th>
+    <th>Статус</th>
+  </tr>
+  <% i = 1 %>
+  <% @results_hash.to_a.each do |key, value| %>
+    <tr><td><%= i %></td><td><%= key %></td><td><%= value %></td></tr>
+    <% i += 1 %>
+  <% end %>
+</table>
+
 
 
