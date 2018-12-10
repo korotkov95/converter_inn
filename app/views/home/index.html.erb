@@ -1,0 +1,5 @@
+<%= form_for(:form, url: parse_path) do |f| %>
+  ИНН : <%= f.text_area :inn %><br />
+  <%= f.submit %>
+<% end %>
+<%= @results %>
