@@ -11,12 +11,12 @@ describe "Home page" do
     expect(page).to have_content("УНП")
   end
   it "should have content submit button" do
-    expect(page).to have_selector("input[type=submit][value='Save Form']")
+    expect(page).to have_selector("input[type=submit][value='Искать!']")
   end
   describe "sending a wrong request" do
     before do
       fill_in "form_inn", with: "123456789"
-      click_button "Save Form"
+      click_button "Искать!"
     end
     describe 'table' do
       it 'exists' do
@@ -32,7 +32,7 @@ describe "Home page" do
   describe "sending a right request" do
     before do
       fill_in "form_inn", with: "190735914"
-      click_button "Save Form"
+      click_button "Искать!"
     end
     describe 'table' do
       it 'exists' do

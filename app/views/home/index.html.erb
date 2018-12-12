@@ -1,19 +1,40 @@
-<%= form_for(:form, url: parse_path) do |f| %>
-  УНП : <%= f.text_area :inn %><br />
-  <%= f.submit %>
-<% end %>
-<table border="1">
-  <tr>
-    <th>№</th>
-    <th>УНП</th>
-    <th>Статус</th>
-  </tr>
-  <% i = 1 %>
-  <% @results_hash.to_a.each do |key, value| %>
-    <tr><td><%= i %></td><td><%= key %></td><td><%= value %></td></tr>
-    <% i += 1 %>
-  <% end %>
-</table>
-
-
-
+<!DOCTYPE html>
+<html>
+  <head>
+    <title> Converter Inn </title>
+    <%= stylesheet_link_tag "application", media: "all",
+                                           "data-turbolinks-track" => true %>
+    <%= javascript_include_tag "application", "data-turbolinks-track" => true %>
+    <%= csrf_meta_tags %>
+    <!--[if lt IE 9]>
+    <script src="http://html5shim.googlecode.com/svn/trunk/html5.js"></script>
+    <![endif]-->
+  </head>
+  <body>
+    <div class="center hero-unit">
+      <%= form_for(:form, url: parse_path) do |f| %>
+        <h1> Введите УНП </h1>
+        <%= f.text_area :inn %><br />
+        <%= f.submit "Искать!", class: "btn btn-large btn-primary"%>
+      <% end %>
+      <% if @results_hash.to_a.length == 0 %>
+        <%  %>
+      <% else %>
+        <h2>
+          <table border="1" align="center">
+            <tr>
+              <th>№</th>
+              <th>УНП</th>
+              <th>Статус</th>
+            </tr>
+            <% i = 1 %>
+            <% @results_hash.to_a.each do |key, value| %>
+              <tr><td><%= i %></td><td><%= key %></td><td><%= value %></td></tr>
+              <% i += 1 %>
+            <% end %>
+          </table>
+        </h2>
+      <% end %>
+    </div>
+  </body>
+</html>
