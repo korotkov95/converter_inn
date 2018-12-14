@@ -21,6 +21,12 @@
         <%  %>
       <% else %>
         <h2>
+          <br>Всего проверено : <%= @all_stat %></br>
+          <% unless @error_stat == 0 %>
+            <br>В одном из значений ошибка!</br>
+          <% end %>
+          <%= pie_chart({"Действующий" => @good_stat, "Ликвидирован / в процессе ликвидации" => @bad_stat,
+                                                                    "В другом статусе" => @other_stat}, donut: true) %>
           <table border="1" align="center">
             <tr>
               <th>№</th>

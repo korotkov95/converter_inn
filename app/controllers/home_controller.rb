@@ -5,6 +5,11 @@ class HomeController < ApplicationController
   def parse
     allinn = params[:form][:inn]
     @results_hash = Hash.new
+    @all_stat = 0
+    @good_stat = 0
+    @bad_stat = 0
+    @other_stat = 0
+    @error_stat = 0
     allinn.split("\r\n").each do |inn|
       begin
         url = "http://www.portal.nalog.gov.by/grp/getData?unp=#{inn}&charset=UTF-8"
@@ -12,8 +17,18 @@ class HomeController < ApplicationController
         inn_c = Hash.from_xml(response.body)["ROWSET"]["ROW"]["VUNP"]
         stat_c = Hash.from_xml(response.body)["ROWSET"]["ROW"]["VKODS"]
         @results_hash.update(inn_c => stat_c)
+        @all_stat += 1
+        if stat_c == "Действующий"
+          @good_stat += 1
+        elsif stat_c == "Ликвидирован" or "В стадии ликвидации"
+          @bad_stat += 1
+        else
+          @other_stat += 1
+        end
       rescue NoMethodError
-        @results_hash.update("ошибка" => "в значении")
+        @results_hash.update(inn => "Не существует")
+        @all_stat += 1
+        @error_stat += 1
         next
       end
     end
@@ -50,4 +65,13 @@ end
 # 806000615
 # 806000628
 # 806000630
+
+# 190436848
+# 100063699
+# 190735914
+# 790916191
+# 123456789
+# 290505026
+# 192456501
+# 192369430
 # end

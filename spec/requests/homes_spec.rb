@@ -24,7 +24,7 @@ describe "Home page" do
       end
       it 'has results inside' do
         within 'table' do
-          expect(page).to have_content("ошибка")
+          expect(page).to have_content("Не существует")
         end
       end
     end
@@ -44,6 +44,28 @@ describe "Home page" do
           expect(page).to have_content("Действующий")
         end
       end
+    end
+  end
+  describe "sending a multi-unp request" do
+    before do
+      fill_in "form_inn", with: "190436848
+                                100063699
+                                190735914
+                                790916191
+                                123456789
+                                290505026
+                                192456501
+                                192369430"
+      click_button "Искать!"
+    end
+    it "all values on page" do
+      expect(page).to have_content("192369430")
+    end
+    it "all statistics on page" do
+      expect(page).to have_content('Всего проверено : 8')
+      # expect(page).to have_content('В статусе "Действующий" : 6')
+      # expect(page).to have_content('В статусе "Ликвидирован / в процессе ликвидации" : 1')
+      # expect(page).to have_content('В одном из значений ошибка!')
     end
   end
 end
