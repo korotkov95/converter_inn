@@ -4,19 +4,22 @@ class HomeController < ApplicationController
 
   def parse
     allinn = params[:form][:inn]
-    @results_hash = Hash.new
+    @results_string = ["№/УНП/Название/Статус"]
     @all_stat = 0
     @good_stat = 0
     @bad_stat = 0
     @other_stat = 0
     @error_stat = 0
+    string_index = 1
     allinn.split("\r\n").each do |inn|
       begin
         url = "http://www.portal.nalog.gov.by/grp/getData?unp=#{inn}&charset=UTF-8"
         response = HTTParty.get(url, format: :xml)
         inn_c = Hash.from_xml(response.body)["ROWSET"]["ROW"]["VUNP"]
         stat_c = Hash.from_xml(response.body)["ROWSET"]["ROW"]["VKODS"]
-        @results_hash.update(inn_c => stat_c)
+        name_c = Hash.from_xml(response.body)["ROWSET"]["ROW"]["VNAIMK"]
+        @results_string.push(string_index.to_s + "/" + inn_c + "/" + name_c + "/" + stat_c)
+        string_index += 1
         @all_stat += 1
         if stat_c == "Действующий"
           @good_stat += 1
@@ -26,7 +29,8 @@ class HomeController < ApplicationController
           @other_stat += 1
         end
       rescue NoMethodError
-        @results_hash.update(inn => "Не существует")
+        @results_string.push(string_index.to_s + "/" + inn.to_s + "/ /Ошибка")
+        string_index += 1
         @all_stat += 1
         @error_stat += 1
         next
@@ -36,7 +40,7 @@ class HomeController < ApplicationController
   end
 end
 
-# def
+# Для тестов
 # 191111259
 # 101179571
 # 190837422

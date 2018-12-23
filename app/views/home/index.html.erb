@@ -1,46 +1,53 @@
-<!DOCTYPE html>
-<html>
-  <head>
-    <title> Converter Inn </title>
-    <%= stylesheet_link_tag "application", media: "all",
-                                           "data-turbolinks-track" => true %>
-    <%= javascript_include_tag "application", "data-turbolinks-track" => true %>
-    <%= csrf_meta_tags %>
-    <!--[if lt IE 9]>
-    <script src="http://html5shim.googlecode.com/svn/trunk/html5.js"></script>
-    <![endif]-->
-  </head>
-  <body>
-    <div class="center hero-unit">
-      <%= form_for(:form, url: parse_path) do |f| %>
-        <h1> Введите УНП </h1>
-        <%= f.text_area :inn %><br />
-        <%= f.submit "Искать!", class: "btn btn-large btn-primary"%>
-      <% end %>
-      <% if @results_hash.to_a.length == 0 %>
-        <%  %>
-      <% else %>
-        <h2>
-          <br>Всего проверено : <%= @all_stat %></br>
-          <% unless @error_stat == 0 %>
-            <br>В одном из значений ошибка!</br>
-          <% end %>
-          <%= pie_chart({"Действующий" => @good_stat, "Ликвидирован / в процессе ликвидации" => @bad_stat,
-                                                                    "В другом статусе" => @other_stat}, donut: true) %>
-          <table border="1" align="center">
-            <tr>
-              <th>№</th>
-              <th>УНП</th>
-              <th>Статус</th>
-            </tr>
-            <% i = 1 %>
-            <% @results_hash.to_a.each do |key, value| %>
-              <tr><td><%= i %></td><td><%= key %></td><td><%= value %></td></tr>
-              <% i += 1 %>
-            <% end %>
-          </table>
-        </h2>
-      <% end %>
+<% provide(:title, 'Cloud check')%>
+
+
+<% if @results_string.to_a.length == 0 %>
+  <div class="well">
+    <div class="row justify-content-center">
+      <p class="h1 center">Введите УНП</p>
     </div>
-  </body>
-</html>
+    <%= form_for(:form, url: parse_path) do |f| %>
+      <%= f.text_area :inn, size: "30x3", placeholder: "123456789
+234567890"%><br />
+      <p> </p>
+      <%= f.submit "Искать!", class: "btn btn-primary outline"%>
+    <% end %>
+  </div>
+<% else %>
+  <div class="container">
+    <div class="well">
+      <h1>Всего проверено : <%= @all_stat %></h1>
+      <% unless @error_stat == 0 %>
+        <p style="color:red;"><b>В одном из значений ошибка!</b></p>
+      <% end %>
+      <%= pie_chart({"Действующий" => @good_stat, "Ликвидирован / в процессе ликвидации" => @bad_stat,
+               "В другом статусе" => @other_stat, "Ошибка в значении" => @error_stat}, donut: true, legend: "right") %>
+    </div>
+    <div class="well">
+      <% @results_string.each do |result| %>
+        <div class="row justify-content-center">
+          <div class="col-1 border border-success">
+            <%= result.split("/")[0] %>
+          </div>
+          <div class="col border border-success">
+            <%= result.split("/")[1] %>
+          </div>
+          <div class="col-5 border border-success">
+            <%= result.split("/")[2] %>
+          </div>
+          <div class="col border border-success">
+            <% if result.split("/")[3] == "Действующий" %>
+              <%= result.split("/")[3] %>
+            <% elsif result.split("/")[3] == "Статус" %>
+              <%= result.split("/")[3] %>
+            <% else %>
+              <b style="color:orange;"><%= result.split("/")[3] %></b>
+            <% end %>
+          </div>
+        </div>
+      <% end %>
+      <p> </p>
+      <a href="/" class="btn btn-primary outline" role="button" aria-pressed="true">Еще раз!</a>
+    </div>
+  </div>
+<% end %>

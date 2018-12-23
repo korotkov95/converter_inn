@@ -5,10 +5,10 @@ require './config/routes.rb'
 describe "Home page" do
   before {visit root_path}
   it "should have the base title" do
-    expect(page).to have_title("ConverterInn")
+    expect(page).to have_title("Cloud check")
   end
-  it "should have content 'УНП'" do
-    expect(page).to have_content("УНП")
+  it "should have content 'Введите УНП'" do
+    expect(page).to have_content("Введите УНП")
   end
   it "should have content submit button" do
     expect(page).to have_selector("input[type=submit][value='Искать!']")
@@ -18,14 +18,12 @@ describe "Home page" do
       fill_in "form_inn", with: "123456789"
       click_button "Искать!"
     end
-    describe 'table' do
+    describe 'grid' do
       it 'exists' do
-        expect(page).to have_css 'table'
+        expect(page).to have_content("Статус")
       end
       it 'has results inside' do
-        within 'table' do
-          expect(page).to have_content("Не существует")
-        end
+        expect(page).to have_content("Ошибка")
       end
     end
   end
@@ -34,15 +32,13 @@ describe "Home page" do
       fill_in "form_inn", with: "190735914"
       click_button "Искать!"
     end
-    describe 'table' do
+    describe 'grid' do
       it 'exists' do
-        expect(page).to have_css 'table'
+        expect(page).to have_content("Статус")
       end
       it 'has results inside' do
-        within 'table' do
-          expect(page).to have_content("190735914")
-          expect(page).to have_content("Действующий")
-        end
+        expect(page).to have_content("190735914")
+        expect(page).to have_content("Действующий")
       end
     end
   end
